@@ -1,0 +1,248 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elvis Medeiros & Dutra Advogados</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .hero {
+            background-image: url('https://images.pexels.com/photos/5669619/pexels-photo-5669619.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 150px 0;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            color: #333;
+        }
+        .service-card {
+            height: 100%;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Elvis Medeiros & Dutra Advogados</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#inicio">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#sobre">Sobre Nós</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#servicos">Serviços</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contato">Contato</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="container">
+            <h1>Bem-vindo à Elvis Medeiros & Dutra Advogados</h1>
+            <p class="lead">Seu parceiro confiável em soluções jurídicas. Com dedicação e expertise, defendemos seus direitos com excelência.</p>
+            <a href="#contato" class="btn btn-primary btn-lg">Entre em Contato</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="sobre" class="py-5">
+        <div class="container">
+            <h2 class="section-title">Sobre Nós</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="https://images.pexels.com/photos/3771097/pexels-photo-3771097.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Equipe de advogados em reunião" class="img-fluid rounded">
+                </div>
+                <div class="col-md-6">
+                    <p>Elvis Medeiros & Dutra Advogados é um escritório de advocacia fundado com o compromisso de oferecer serviços jurídicos de alta qualidade, personalizados para atender às necessidades específicas de cada cliente. Com uma equipe experiente e dedicada, atuamos em diversas áreas do direito, garantindo soluções eficientes e éticas.</p>
+                    <p>Nossa missão é defender os interesses de nossos clientes com integridade, transparência e profissionalismo. Ao longo dos anos, construímos uma reputação sólida baseada em resultados positivos e na satisfação de nossos clientes.</p>
+                    <p><strong>CNPJ:</strong> 48.690.017/0001-44</p>
+                    <p><strong>Endereço:</strong> Avenida Goiás, 606, Quadra 10, Lote 64/67, Sala 707, Edifício Minasbank, Setor Central, Goiânia - GO, CEP 74020-200</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicos" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-title">Nossos Serviços</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card">
+                        <img src="https://images.pexels.com/photos/5669601/pexels-photo-5669601.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="card-img-top" alt="Livros de direito">
+                        <div class="card-body">
+                            <h5 class="card-title">Direito Civil</h5>
+                            <p class="card-text">Atuamos em ações cíveis, contratos, responsabilidade civil, direitos reais e obrigações. Nossa equipe analisa cada caso com profundidade para oferecer a melhor estratégia de defesa ou reivindicação.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card">
+                        <img src="https://images.pexels.com/photos/6077447/pexels-photo-6077447.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="card-img-top" alt="Advogada analisando documentos">
+                        <div class="card-body">
+                            <h5 class="card-title">Direito Penal</h5>
+                            <p class="card-text">Defesa em processos criminais, com foco em crimes contra o patrimônio, honra e vida. Garantimos o direito à ampla defesa e ao contraditório, buscando sempre a justiça e a absolvição quando possível.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card">
+                        <img src="https://images.pexels.com/photos/4819509/pexels-photo-4819509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="card-img-top" alt="Aperto de mãos em escritório">
+                        <div class="card-body">
+                            <h5 class="card-title">Direito de Família</h5>
+                            <p class="card-text">Assessoria em divórcios, guarda de filhos, pensão alimentícia e inventários. Tratamos esses assuntos sensíveis com empatia e discrição, priorizando o bem-estar familiar.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card">
+                        <img src="https://images.pexels.com/photos/6077354/pexels-photo-6077354.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="card-img-top" alt="Consulta jurídica">
+                        <div class="card-body">
+                            <h5 class="card-title">Direito Trabalhista</h5>
+                            <p class="card-text">Representação em reclamações trabalhistas, rescisões contratuais e negociações sindicais. Defendemos tanto empregados quanto empregadores, buscando acordos justos e rápidos.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card">
+                        <img src="https://images.pexels.com/photos/3772612/pexels-photo-3772612.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="card-img-top" alt="Advogado em terno">
+                        <div class="card-body">
+                            <h5 class="card-title">Direito Empresarial</h5>
+                            <p class="card-text">Consultoria para empresas em contratos comerciais, fusões, aquisições e compliance. Auxiliamos no planejamento jurídico para minimizar riscos e maximizar oportunidades de negócio.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card">
+                        <img src="https://images.pexels.com/photos/5669602/pexels-photo-5669602.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="card-img-top" alt="Martelo de juiz">
+                        <div class="card-body">
+                            <h5 class="card-title">Consultoria Jurídica</h5>
+                            <p class="card-text">Serviços de assessoria preventiva, análise de riscos e planejamento estratégico. Oferecemos orientação contínua para indivíduos e empresas evitarem litígios desnecessários.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contato" class="py-5">
+        <div class="container">
+            <h2 class="section-title">Entre em Contato</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <form>
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="nome" placeholder="Seu nome">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="seu@email.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="mensagem" class="form-label">Mensagem</label>
+                            <textarea class="form-control" id="mensagem" rows="5" placeholder="Sua mensagem"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h5>Nosso Endereço</h5>
+                    <p>Avenida Goiás, 606, Quadra 10, Lote 64/67, Sala 707, Edifício Minasbank</p>
+                    <p>Setor Central, Goiânia - GO</p>
+                    <p>CEP: 74020-200</p>
+                    <p><strong>CNPJ:</strong> 48.690.017/0001-44</p>
+                    <h5>Telefone</h5>
+                    <p>(62) 1234-5678 (fictício, substitua pelo real)</p>
+                    <h5>Email</h5>
+                    <p>contato@elvisdutraadvogados.com.br (fictício, substitua pelo real)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p>&copy; 2025 Elvis Medeiros & Dutra Advogados. Todos os direitos reservados.</p>
+            <p>Avenida Goiás, 606, Quadra 10, Lote 64/67, Sala 707, Edifício Minasbank, Setor Central, Goiânia - GO, 74020-200</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+</body>
+</html>
